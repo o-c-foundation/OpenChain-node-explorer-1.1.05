@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Professional OpenChain Explorer - A powerful blockchain explorer for the OpenChain network">
+    <title>OpenChain Explorer - Professional Blockchain Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/explorer.css">
+    <link rel="stylesheet" href="/css/charts.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fas fa-cubes"></i> OpenChain Explorer
+            </div>
+            <div class="search-container">
+                <form class="search-form" id="searchForm">
+                    <input type="text" class="search-input" placeholder="Search by Block / Tx Hash / Address / Contract" id="searchInput">
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+                <div class="search-results" id="searchResults">
+                    <!-- Search results will be dynamically added here -->
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <a href="/" class="nav-link active">Home</a>
+                <a href="/blocks.html" class="nav-link">Blocks</a>
+                <a href="/transactions.html" class="nav-link">Transactions</a>
+                <a href="/tokens.html" class="nav-link">Tokens</a>
+                <a href="/contracts.html" class="nav-link">Contracts</a>
+                <a href="/nodes.html" class="nav-link">Nodes</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <section class="network-overview">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Network Overview</div>
+                            <div class="card-subtitle">Latest activity across the OpenChain network</div>
+                        </div>
+                        <div id="nodeStatusPills">
+                            <!-- Node status pills will be dynamically added here -->
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-cube"></i>
+                                </div>
+                                <div class="stat-value" id="totalBlocks">-</div>
+                                <div class="stat-label">Total Blocks</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-exchange-alt"></i>
+                                </div>
+                                <div class="stat-value" id="totalTransactions">-</div>
+                                <div class="stat-label">Transactions</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-file-contract"></i>
+                                </div>
+                                <div class="stat-value" id="totalContracts">-</div>
+                                <div class="stat-label">Smart Contracts</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-server"></i>
+                                </div>
+                                <div class="stat-value" id="activeNodes">-</div>
+                                <div class="stat-label">Active Nodes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="activity-charts">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Network Activity</div>
+                        <div class="time-filter">
+                            <button class="btn btn-outline active" data-time="24h">24H</button>
+                            <button class="btn btn-outline" data-time="7d">7D</button>
+                            <button class="btn btn-outline" data-time="30d">30D</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="activityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="two-column-grid">
+                <section class="latest-blocks">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Latest Blocks</div>
+                            <a href="/blocks.html" class="btn btn-outline">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Block</th>
+                                            <th>Age</th>
+                                            <th>Txns</th>
+                                            <th>Miner</th>
+                                            <th>Hash</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="latestBlocks">
+                                        <tr>
+                                            <td colspan="5" class="text-center">Loading blocks...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="latest-transactions">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Latest Transactions</div>
+                            <a href="/transactions.html" class="btn btn-outline">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Tx Hash</th>
+                                            <th>From</th>
+                                            <th>To</th>
+                                            <th>Type</th>
+                                            <th>Age</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="latestTransactions">
+                                        <tr>
+                                            <td colspan="5" class="text-center">Loading transactions...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <section class="token-overview">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Token Overview</div>
+                        <a href="/tokens.html" class="btn btn-outline">View All Tokens</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Token</th>
+                                        <th>Price</th>
+                                        <th>Change (24h)</th>
+                                        <th>Market Cap</th>
+                                        <th>Holders</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tokensList">
+                                    <!-- Token list will be dynamically added here -->
+                                    <tr>
+                                        <td>1</td>
+                                        <td>
+                                            <div class="token-info">
+                                                <img src="/img/opusd.png" alt="OpenUSD" class="token-icon">
+                                                <div>
+                                                    <div class="token-name">OpenUSD</div>
+                                                    <div class="token-symbol">opUSD</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>$1.00</td>
+                                        <td class="change-positive">+0.05%</td>
+                                        <td>$1,000,000</td>
+                                        <td>250</td>
+                                        <td>
+                                            <a href="/token/opusd" class="btn btn-sm">View</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>
+                                            <div class="token-info">
+                                                <img src="/img/oswp.png" alt="OpenSwap" class="token-icon">
+                                                <div>
+                                                    <div class="token-name">OpenSwap</div>
+                                                    <div class="token-symbol">OSWP</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>$0.15</td>
+                                        <td class="change-negative">-2.34%</td>
+                                        <td>$150,000</td>
+                                        <td>125</td>
+                                        <td>
+                                            <a href="/token/oswp" class="btn btn-sm">View</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-section">
+                <div class="footer-title">OpenChain Explorer</div>
+                <p>The most advanced and feature-rich blockchain explorer for the OpenChain network.</p>
+            </div>
+            <div class="footer-section">
+                <div class="footer-title">Explorer</div>
+                <ul class="footer-links">
+                    <li><a href="/blocks.html"><i class="fas fa-cube"></i> Blocks</a></li>
+                    <li><a href="/transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
+                    <li><a href="/tokens.html"><i class="fas fa-coins"></i> Tokens</a></li>
+                    <li><a href="/contracts.html"><i class="fas fa-file-contract"></i> Smart Contracts</a></li>
+                    <li><a href="/nodes.html"><i class="fas fa-server"></i> Nodes</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <div class="footer-title">Resources</div>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-book"></i> API Documentation</a></li>
+                    <li><a href="#"><i class="fas fa-code"></i> Developer Guides</a></li>
+                    <li><a href="#"><i class="fas fa-shield-alt"></i> Contract Verification</a></li>
+                    <li><a href="#"><i class="fas fa-chart-line"></i> Network Status</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <div class="footer-title">Community</div>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
+                    <li><a href="#"><i class="fab fa-discord"></i> Discord</a></li>
+                    <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                    <li><a href="#"><i class="fab fa-telegram"></i> Telegram</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            &copy; 2023 OpenChain Explorer. v1.1.05 - All rights reserved.
+        </div>
+    </footer>
+
+    <script src="/js/explorer.js"></script>
+    <script src="/js/charts.js"></script>
+    <script>
+        // Initialize activity chart (placeholder)
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            
+            // Sample data
+            const dates = Array.from({length: 30}, (_, i) => {
+                const date = new Date();
+                date.setDate(date.getDate() - 29 + i);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+            
+            const blockData = Array.from({length: 30}, () => Math.floor(Math.random() * 20 + 5));
+            const txData = Array.from({length: 30}, () => Math.floor(Math.random() * 50 + 10));
+            
+            const activityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: 'Blocks',
+                            data: blockData,
+                            borderColor: 'rgba(52, 152, 219, 1)',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Transactions',
+                            data: txData,
+                            borderColor: 'rgba(46, 204, 113, 1)',
+                            backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Update chart on time filter click
+            document.querySelectorAll('.time-filter button').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.time-filter button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    const timeframe = this.getAttribute('data-time');
+                    
+                    // In a real app, you'd fetch new data based on the timeframe
+                    // For this demo, we'll just update with random data
+                    let dataPoints;
+                    let labels;
+                    
+                    if (timeframe === '24h') {
+                        dataPoints = 24;
+                        labels = Array.from({length: dataPoints}, (_, i) => `${23-i}:00`).reverse();
+                    } else if (timeframe === '7d') {
+                        dataPoints = 7;
+                        labels = Array.from({length: dataPoints}, (_, i) => {
+                            const date = new Date();
+                            date.setDate(date.getDate() - 6 + i);
+                            return date.toLocaleDateString('en-US', { weekday: 'short' });
+                        });
+                    } else {
+                        dataPoints = 30;
+                        labels = Array.from({length: dataPoints}, (_, i) => {
+                            const date = new Date();
+                            date.setDate(date.getDate() - 29 + i);
+                            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                        });
+                    }
+                    
+                    activityChart.data.labels = labels;
+                    activityChart.data.datasets[0].data = Array.from({length: dataPoints}, () => Math.floor(Math.random() * 20 + 5));
+                    activityChart.data.datasets[1].data = Array.from({length: dataPoints}, () => Math.floor(Math.random() * 50 + 10));
+                    
+                    activityChart.update();
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
